@@ -6,10 +6,12 @@ public class ShotManager : MonoBehaviour {
 	private static ShotManager s_instance;
 
 	void Awake() {
-		if( s_instance != null )
+		if( s_instance != null ) {
 			DestroyImmediate( gameObject );
-		else
+		} else {
 			s_instance = this;
+			DontDestroyOnLoad( gameObject );
+		}
 	}
 
 	// Update is called once per frame
@@ -20,12 +22,19 @@ public class ShotManager : MonoBehaviour {
 	}
 
 	public void Shoot( float x, float y ) {
-		Ray ray = Camera.main.ViewportPointToRay( new Vector3( x, y ) );
+		Ray ray = Camera.main.ScreenPointToRay( new Vector3( x, y ) );
 		RaycastHit hit;
-		Debug.Log( x + y );
 		if( Physics.Raycast( ray, out hit ) ) {
-			hit.transform.SendMessage( "Hit" );
-
+			if(hit.collider.gameObject.tag == "Outside") {
+				GameManager.ChangeScore(1);
+				Debug.Log( "HIt " );
+			} else if(hit.collider.gameObject.tag == "Middle") {
+				GameManager.ChangeScore(2);
+			} else if(hit.collider.gameObject.tag == "Center") {
+				GameManager.ChangeScore(3);
+			} else {
+				GameManager.ChangeScore(-1);
+			}
 		}
 	}
 }
