@@ -24,17 +24,26 @@ public class ShotManager : MonoBehaviour {
 	public void Shoot( float x, float y ) {
 		Ray ray = Camera.main.ScreenPointToRay( new Vector3( x, y ) );
 		RaycastHit hit;
+
 		if( Physics.Raycast( ray, out hit ) ) {
+			hit.transform.SendMessageUpwards( "Hit", SendMessageOptions.DontRequireReceiver );
+			//Debug.Log( hit.transform.name );
+
 			if(hit.collider.gameObject.tag == "Outside") {
 				GameManager.ChangeScore(1);
-				Debug.Log( "HIt " );
+				//Debug.Log( 1 );
 			} else if(hit.collider.gameObject.tag == "Middle") {
 				GameManager.ChangeScore(2);
+				//Debug.Log( 2 );
 			} else if(hit.collider.gameObject.tag == "Center") {
 				GameManager.ChangeScore(3);
+				//Debug.Log( 3 );
 			} else {
 				GameManager.ChangeScore(-1);
+				//Debug.Log( -1 );
 			}
+
+			Debug.Log( GameManager.m_score );
 		}
 	}
 }
