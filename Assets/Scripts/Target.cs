@@ -10,11 +10,6 @@ public class Target : MonoBehaviour {
 	void Start () {
 		m_animator = GetComponentInChildren<Animator>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	public void Hit() {
 		m_animator.SetTrigger( "Drop" );
