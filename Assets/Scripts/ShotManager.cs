@@ -5,6 +5,8 @@ public class ShotManager : MonoBehaviour {
 
 	private static ShotManager s_instance;
 
+	public GameObject hitParticle;
+
 	void Awake() {
 		if( s_instance != null ) {
 			DestroyImmediate( gameObject );
@@ -13,37 +15,42 @@ public class ShotManager : MonoBehaviour {
 			DontDestroyOnLoad( gameObject );
 		}
 	}
-
-	// Update is called once per frame
+		
 	void Update () {
-		if( Input.GetMouseButtonDown( 0 ) ) {
-			Shoot( Input.mousePosition.x/Screen.width, Input.mousePosition.y/Screen.height );
+		if(Input.GetButtonDown("Fire1")) {
+			Shoot(Input.mousePosition.x/Screen.width, Input.mousePosition.y/Screen.height);
 		}
 	}
 
-	public void Shoot( float x, float y ) {
-		Ray ray = Camera.main.ViewportPointToRay( new Vector3( x, y ) );
+	public void Shoot(Vector2 pos) {
+		Shoot (pos.x, pos.y);
+	}
+
+	public void Shoot(float x, float y) {
+		Ray ray = Camera.main.ViewportPointToRay(new Vector3(x, y));
 		RaycastHit hit;
 
 		if( Physics.Raycast( ray, out hit ) ) {
-			hit.transform.SendMessageUpwards( "Hit", SendMessageOptions.DontRequireReceiver );
-			//Debug.Log( hit.transform.name );
+			hit.transform.SendMessageUpwards("Hit", SendMessageOptions.DontRequireReceiver);
+
+			GameObject particle = (GameObject)Instantiate(hitParticle, hit.point, Quaternion.identity);
+//			particle.transform.rotation = Quaternion.LookRotation(hit.normal, -particle.transform.forward);
+//			particle.transform.LookAt(hit.point + Vector3.back, Vector3.right);
+			particle.transform.eulerAngles = new Vector3(270f, 0f, 0f); // Fuck it I'm not smart enough
+
+			Transform decal = particle.transform.FindChild("ShatteredGround");
+
+			decal.parent = hit.transform.parent;
 
 			if(hit.collider.gameObject.tag == "Outside") {
 				GameManager.ChangeScore(1);
-				//Debug.Log( 1 );
 			} else if(hit.collider.gameObject.tag == "Middle") {
 				GameManager.ChangeScore(2);
-				//Debug.Log( 2 );
 			} else if(hit.collider.gameObject.tag == "Center") {
 				GameManager.ChangeScore(3);
-				//Debug.Log( 3 );
 			} else {
 				GameManager.ChangeScore(-1);
-				//Debug.Log( -1 );
 			}
-
-			Debug.Log( GameManager.m_score );
 		}
 	}
 }

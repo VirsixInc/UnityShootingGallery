@@ -29,4 +29,12 @@ public class GameManager : MonoBehaviour {
 	public static void ChangeScore( int num ) {
 		m_score += num;
 	}
+
+	public void OSCMessageReceived(OSC.NET.OSCMessage message) {
+		if(message.Address == "/shoot"){
+			float x = (float)message.Values[0];
+			float y = (float)message.Values[1];
+			SendMessage("Shoot", new Vector2(x, y));
+		}
+	}
 }
