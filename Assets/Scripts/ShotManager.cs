@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ShotManager : MonoBehaviour {
 
-	private static ShotManager s_instance;
+	public static ShotManager s_instance;
 
 	public GameObject hitParticle;
 
@@ -29,6 +29,11 @@ public class ShotManager : MonoBehaviour {
 	}
 
 	public void Shoot(float x, float y) {
+		if (GameManager.s_instance.thisGameState == GameState.Start) {
+			GameManager.s_instance.StartGame();
+			return;
+		}
+
 		Ray ray = Camera.main.ViewportPointToRay(new Vector3(x, y));
 		RaycastHit hit;
 
@@ -36,7 +41,6 @@ public class ShotManager : MonoBehaviour {
 
 		if( Physics.Raycast( ray, out hit ) ) {
 			hit.transform.SendMessageUpwards("Hit", SendMessageOptions.DontRequireReceiver);
-
 			GameObject particle = (GameObject)Instantiate(hitParticle, hit.point, Quaternion.identity);
 //			particle.transform.rotation = Quaternion.LookRotation(hit.normal, -particle.transform.forward);
 //			particle.transform.LookAt(hit.point + Vector3.back, Vector3.right);

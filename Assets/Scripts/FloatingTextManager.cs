@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class FloatingTextManager : MonoBehaviour {
 	
 	static FloatingTextManager s_instance;
-	
+
 	public GameObject okayPrefab, nicePrefab, bullseyePrefab;
 	
 	private float m_fadeTime = 1.0f;
