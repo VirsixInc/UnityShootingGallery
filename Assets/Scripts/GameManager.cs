@@ -1,10 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
+
+public enum GameState {Start, Playing, Score};
+
 
 public class GameManager : MonoBehaviour {
 
-	private static GameManager s_instance;
-
+	public GameState thisGameState = GameState.Start;
+	public static GameManager s_instance;
+	public int gameDuration = 60; //sets how long a shooting round lasts
 	public static int m_score;
 	
 	void Awake() {
@@ -16,16 +21,6 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	public static void ChangeScore( int num ) {
 		m_score += num;
 	}
@@ -34,7 +29,38 @@ public class GameManager : MonoBehaviour {
 		if(message.Address == "/shoot"){
 			float x = (float)message.Values[0];
 			float y = (float)message.Values[1];
-			SendMessage("Shoot", new Vector2(x, y));
+			SendMessage("Shoot", new Vector2(x, y)); //goes to shot manager
 		}
 	}
+
+	public void StartGame() {
+		//enter shooting gallery mode
+		thisGameState = GameState.Playing;
+		GetComponentInChildren<Timer>().timer = gameDuration; //set timer
+		Application.LoadLevel(1);
+		GetComponentInChildren<Text>().enabled = true; //show timer
+		GetComponentInChildren<Timer> ().Init (); //start timer countdown
+	}
+
+	public void EndRound () {
+		//score screen
+		GetComponentInChildren<Text>().enabled = false; //hide timer
+		thisGameState = GameState.Score;
+		Application.LoadLevel (2);
+		StartCoroutine ("LoadMainScreen");
+	}
+
+	IEnumerator LoadMainScreen () {
+		//start screen
+		yield return new WaitForSeconds (10);
+		m_score = 0; //reset score
+		GetComponentInChildren<Text>().enabled = false; //hide timer
+		ShotManager.s_instance.totalShots = 0;
+		ShotManager.s_instance.shotsHit = 0;
+		thisGameState = GameState.Start;
+		Application.LoadLevel (0);
+
+
+	}
+
 }

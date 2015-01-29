@@ -3,9 +3,11 @@ using System.Collections;
 
 public class ShotManager : MonoBehaviour {
 
-	private static ShotManager s_instance;
+	public static ShotManager s_instance;
 
 	public GameObject hitParticle;
+
+	public int shotsHit = 0, totalShots = 0;
 
 	void Awake() {
 		if( s_instance != null ) {
@@ -27,12 +29,18 @@ public class ShotManager : MonoBehaviour {
 	}
 
 	public void Shoot(float x, float y) {
+		if (GameManager.s_instance.thisGameState == GameState.Start) {
+			GameManager.s_instance.StartGame();
+			return;
+		}
+
 		Ray ray = Camera.main.ViewportPointToRay(new Vector3(x, y));
 		RaycastHit hit;
 
+		totalShots++;
+
 		if( Physics.Raycast( ray, out hit ) ) {
 			hit.transform.SendMessageUpwards("Hit", SendMessageOptions.DontRequireReceiver);
-
 			GameObject particle = (GameObject)Instantiate(hitParticle, hit.point, Quaternion.identity);
 //			particle.transform.rotation = Quaternion.LookRotation(hit.normal, -particle.transform.forward);
 //			particle.transform.LookAt(hit.point + Vector3.back, Vector3.right);
@@ -44,10 +52,16 @@ public class ShotManager : MonoBehaviour {
 
 			if(hit.collider.gameObject.tag == "Outside") {
 				GameManager.ChangeScore(1);
+				shotsHit++;
+				FloatingTextManager.CreateFloatingText(hit.point, FloatingTextManager.ScoreType.OKAY);
 			} else if(hit.collider.gameObject.tag == "Middle") {
 				GameManager.ChangeScore(2);
+				FloatingTextManager.CreateFloatingText(hit.point, FloatingTextManager.ScoreType.NICE);
+				shotsHit++;
 			} else if(hit.collider.gameObject.tag == "Center") {
 				GameManager.ChangeScore(3);
+				FloatingTextManager.CreateFloatingText(hit.point, FloatingTextManager.ScoreType.BULLSEYE);
+				shotsHit++;
 			} else {
 				GameManager.ChangeScore(-1);
 			}

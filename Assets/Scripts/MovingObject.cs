@@ -14,11 +14,15 @@ public class MovingObject : MonoBehaviour {
 		transform.Translate( m_direction * m_speed * Time.deltaTime );
 	}
 
-	public void SetSpeed( float value ) {
+	void SetSpeed( float value ) {
 		m_speed = value;
 	}
 	
-	public void SetDirection( Vector3 v ) {
+	void SetDirection( Vector3 v ) {
 		m_direction = v;
+	}
+
+	void StartDeathTimer() {
+		Destroy (gameObject, 14f);
 	}
 }
