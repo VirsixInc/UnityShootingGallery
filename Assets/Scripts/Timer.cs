@@ -7,7 +7,7 @@ public class Timer : MonoBehaviour {
 	Text timerText;
 	public Image fadeOut;
 	public int timer;
-	float startTime, fadeTime = 1, blackTime = .0001f;
+	float startTime, fadeTime = .0001f, blackTime = .0001f;
 	bool isFading = false, isBlackingOut;
 	void Awake() {
 		timerText = GetComponent<Text> ();
@@ -43,7 +43,7 @@ public class Timer : MonoBehaviour {
 	}
 
 	IEnumerator CountDown () {
-		while (timer > -1) {
+		while (timer >= 0) {
 			yield return new WaitForSeconds(1);
 			timer -= 1;
 		}
