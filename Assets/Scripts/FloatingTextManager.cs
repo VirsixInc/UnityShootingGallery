@@ -10,6 +10,7 @@ public class FloatingTextManager : MonoBehaviour {
 	
 	private float m_fadeTime = 1.0f;
 	private float m_yGain = 0.5f;	// meters per second
+	private float m_alphaRate = 2f;
 
 	public enum ScoreType {
 		OKAY, NICE, BULLSEYE
@@ -81,13 +82,15 @@ public class FloatingTextManager : MonoBehaviour {
 		Vector3 startingPos = textObj.transform.position;
 		Vector3 yOffset = Vector3.zero;
 		float timer = 0f;
+		float alphaShift = 1f;
 		
 		while(timer < m_fadeTime) {
 			yOffset.y += m_yGain * Time.deltaTime;
-			
+			textObj.color = new Color(1f,1f,1f,alphaShift);
 			textObj.transform.position = startingPos + yOffset;
 			
 			timer += Time.deltaTime;
+			alphaShift -= Time.deltaTime * m_alphaRate;
 			yield return null;
 		}
 		

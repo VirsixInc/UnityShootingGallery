@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour {
 	public GameState thisGameState = GameState.Start;
 	public static GameManager s_instance;
 	public int gameDuration = 60; //sets how long a shooting round lasts
-	public static int m_score;
+	public static int m_score = 0;
 	
 	void Awake() {
 		if( s_instance != null ) {
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour {
 
 	IEnumerator LoadMainScreen () {
 		//start screen
-		yield return new WaitForSeconds (10);
+		yield return new WaitForSeconds (5); //show score for this long before going back to main screen
 		m_score = 0; //reset score
 		GetComponentInChildren<Text>().enabled = false; //hide timer
 		ShotManager.s_instance.totalShots = 0;

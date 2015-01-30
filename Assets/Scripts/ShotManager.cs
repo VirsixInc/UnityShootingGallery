@@ -29,7 +29,7 @@ public class ShotManager : MonoBehaviour {
 	}
 
 	public void Shoot(float x, float y) {
-		if (GameManager.s_instance.thisGameState == GameState.Start) {
+		if (GameManager.s_instance.thisGameState == GameState.Start) { //starts the game
 			GameManager.s_instance.StartGame();
 			return;
 		}
