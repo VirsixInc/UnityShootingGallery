@@ -4,7 +4,7 @@ using System.Collections;
 public class ShotManager : MonoBehaviour {
 
 	public static ShotManager s_instance;
-
+	private AudioSource myAudio;
 	public GameObject hitParticle;
 
 	public int shotsHit = 0, totalShots = 0;
@@ -17,10 +17,16 @@ public class ShotManager : MonoBehaviour {
 			DontDestroyOnLoad( gameObject );
 		}
 	}
-		
+
+	void Start () {
+		myAudio = GetComponent<AudioSource> ();
+	}
+
 	void Update () {
 		if(Input.GetButtonDown("Fire1")) {
 			Shoot(Input.mousePosition.x/Screen.width, Input.mousePosition.y/Screen.height);
+			myAudio.Play();
+
 		}
 	}
 
