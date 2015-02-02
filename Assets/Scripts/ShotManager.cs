@@ -6,6 +6,7 @@ public class ShotManager : MonoBehaviour {
 	public static ShotManager s_instance;
 	private AudioSource myAudio;
 	public GameObject hitParticle;
+	bool canShoot = true;
 
 	public int shotsHit = 0, totalShots = 0;
 

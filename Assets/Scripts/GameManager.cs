@@ -11,8 +11,13 @@ public class GameManager : MonoBehaviour {
 	public static GameManager s_instance;
 	public int gameDuration = 60; //sets how long a shooting round lasts
 	public static int m_score = 0;
-	
+
+	float timeSinceLastShot;
+	bool canShoot;
+
 	void Awake() {
+		timeSinceLastShot = Time.time;
+
 		if( s_instance != null ) {
 			DestroyImmediate( gameObject );
 		} else {
@@ -25,8 +30,17 @@ public class GameManager : MonoBehaviour {
 		m_score += num;
 	}
 
+	void Update(){
+		if (timeSinceLastShot + 0.25f < Time.time) {
+						timeSinceLastShot = Time.time;
+						canShoot = true;
+				}
+
+	}
 	public void OSCMessageReceived(OSC.NET.OSCMessage message) {
-		if(message.Address == "/shoot"){
+		if(message.Address == "/shoot" && canShoot){
+			timeSinceLastShot = Time.time;
+			canShoot = false;
 			float x = (float)message.Values[0];
 			float y = (float)message.Values[1];
 			SendMessage("Shoot", new Vector2(x, y)); //goes to shot manager
